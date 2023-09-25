@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using YoutubeStuff.Models;
 
-namespace YoutubeStuff.Models;
+namespace YoutubeStuff.DataContext;
 
 public partial class MyDbContext : DbContext
 {
@@ -32,6 +33,8 @@ public partial class MyDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<YtFile> YtFiles { get; set; }
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Artist>(entity =>
