@@ -18,12 +18,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="VideoLibrary" Version="3.2.3" />
     <PackageReference Include="WrapYouTubeDl" Version="1.0.4" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Download\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
