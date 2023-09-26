@@ -1,11 +1,15 @@
 ﻿@page "/counter"
 @using VideoLibrary;
+@using YoutubeStuff.Services.Misc.FileService;
+@inject IFileService FileService;
 
 <PageTitle>Counter</PageTitle>
 
 <button @onclick=download>Twoj stary</button>
 <input type="text" @bind-value=url/>
 <h3>@text</h3>
+
+<h3>@FileService.TestReturnVar() </h3>
 
 
 @code {

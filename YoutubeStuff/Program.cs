@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using YoutubeStuff.DataContext;
+using YoutubeStuff.Services.Misc.FileService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddServerSideBlazor();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IFileService, FileService>();
 
 var app = builder.Build();
 
