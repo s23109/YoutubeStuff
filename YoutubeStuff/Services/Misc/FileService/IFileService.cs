@@ -2,7 +2,7 @@
 {
     public interface IFileService
     { 
-        bool TestBinFolder();
+        string TestBinFolder();
 
         string TestReturnVar();
     }

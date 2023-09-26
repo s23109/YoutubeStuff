@@ -1,4 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using System.Diagnostics;
 
 namespace YoutubeStuff.Services.Misc.FileService
 {
@@ -22,9 +22,37 @@ namespace YoutubeStuff.Services.Misc.FileService
             return _downloadFolder + "\n" + _binaryfolder;
         }
 
-        public bool TestBinFolder()
+        public string TestBinFolder()
         {
-            throw new NotImplementedException();
+            ProcessStartInfo psi = new ProcessStartInfo()
+            {
+                FileName = "cmd.exe",
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                WorkingDirectory = _binaryfolder
+            };
+            
+            Process process = new Process() { StartInfo = psi};
+            process.Start();
+
+            StreamWriter sw = process.StandardInput;
+            StreamReader sr = process.StandardOutput;
+
+            sw.WriteLine("dir");
+
+            sw.Close();
+
+            string output = sr.ReadToEnd();
+
+            process.WaitForExit();
+
+            sr.Close();
+            process.Close();
+
+            return output;
+
         }
     }
 }
