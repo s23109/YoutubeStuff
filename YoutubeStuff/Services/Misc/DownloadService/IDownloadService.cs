@@ -6,5 +6,10 @@ namespace YoutubeStuff.Services.Misc.DownloadService
     {
         bool IsCorrectUrl(string url);
 
+        Task<string> DownloadSingleUrl(string url);
+
     }
+
+
+
 }

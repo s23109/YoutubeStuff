@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using YoutubeStuff.Utils;
+using VideoLibrary;
 
 namespace YoutubeStuff.Services.Misc.DownloadService
 {
@@ -13,9 +13,41 @@ namespace YoutubeStuff.Services.Misc.DownloadService
         private readonly Regex regexCorrectUrl = new("^https:\\/\\/www\\.youtube\\.com\\/watch\\?v\\=.{11}(&list=.{34})?$", RegexOptions.Singleline);
 
 
+        private string _downloadFolder { get; set; }
+        private string _binaryfolder { get; set; }
+
+        public DownloadService()
+        {
+            var config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
+            _downloadFolder = config["downloadfolder"];
+            _binaryfolder = config["binaryfolder"];
+        }
+
         public bool IsCorrectUrl(string url)
         {
             return regexCorrectUrl.IsMatch(url);
         }
+
+
+        public async Task<string> DownloadUrl(string url)
+        {
+            if (!regexSingleVideo.IsMatch(url))
+            {
+                throw new Exception("Invalid URL given");
+            }
+            else
+            {
+                //download ... 
+                return await Task.Run(() => {
+                    var youtube = YouTube.Default;
+                    var video = youtube.GetVideo(url);
+
+                    System.IO.File.WriteAllBytes((_downloadFolder + video.FullName + ".mp4"), video.GetBytes());
+                    return video.FullName;
+
+                });
+            }
+        }
+
     }
 }

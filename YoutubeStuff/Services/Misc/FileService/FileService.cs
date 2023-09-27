@@ -54,5 +54,31 @@ namespace YoutubeStuff.Services.Misc.FileService
             return output;
 
         }
+
+        public async Task<string> ConvertSingularToMp3(string fileName)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo()
+            {
+                FileName= fileName,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                WorkingDirectory = _downloadFolder
+            };
+
+            //first check if file exists
+            if (!File.Exists(_downloadFolder+"\\"+fileName)) {
+                throw new Exception("File does not exist");
+            }
+            else
+            {
+                return await Task.Run(() => {
+                    return "asd";
+                
+                });
+            }
+
+        }
     }
 }
