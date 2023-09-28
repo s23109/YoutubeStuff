@@ -1,7 +1,8 @@
 ﻿@page "/counter"
 @using VideoLibrary;
 @using YoutubeStuff.Services.Misc.FileService;
-@inject IFileService FileService;
+@using YoutubeStuff.Services.Misc.YtFileService;
+@inject IYtFileService YtFileService;
 
 <PageTitle>Counter</PageTitle>
 
@@ -9,30 +10,15 @@
 <input type="text" @bind-value=url/>
 <h3>@text</h3>
 
-<h3>@FileService.TestBinFolder() </h3>
+<h3> </h3>
 
 
 @code {
     public string url = null;
     public string text = null;
 
-    public void download()
+    public async Task download()
     {
-        var config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
-        var tempFileName = Guid.NewGuid().ToString();
-
-        var mp3OutputFolder = config["downloadfolder"];
-
-        text = "Begin";
-
-        var youtube = YouTube.Default;
-        var video = youtube.GetVideo(url);
-
-        System.IO.File.WriteAllBytes((mp3OutputFolder + video.FullName + ".mp4"),video.GetBytes());
-
-        text = "Done";
-
+        text = await YtFileService.DownloadAndConvertSingle(url);
     }
-
-    
 }

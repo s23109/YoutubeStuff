@@ -33,8 +33,8 @@ namespace YoutubeStuff.Services.Misc.FileService
                 CreateNoWindow = true,
                 WorkingDirectory = _binaryfolder
             };
-            
-            Process process = new Process() { StartInfo = psi};
+
+            Process process = new Process() { StartInfo = psi };
             process.Start();
 
             StreamWriter sw = process.StandardInput;
@@ -59,7 +59,7 @@ namespace YoutubeStuff.Services.Misc.FileService
         {
             ProcessStartInfo psi = new ProcessStartInfo()
             {
-                FileName= fileName,
+                FileName = "cmd.exe",
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
@@ -68,14 +68,35 @@ namespace YoutubeStuff.Services.Misc.FileService
             };
 
             //first check if file exists
-            if (!File.Exists(_downloadFolder+"\\"+fileName)) {
+            if (!File.Exists((_downloadFolder + "\\" + fileName)))
+            {
                 throw new Exception("File does not exist");
             }
             else
             {
-                return await Task.Run(() => {
-                    return "asd";
-                
+                return await Task.Run(() =>
+                {
+                    Process process = new Process() { StartInfo = psi };    
+                    process.Start();
+
+                    StreamWriter sw = process.StandardInput;
+                    StreamReader sr = process.StandardOutput;
+
+                    //mistrzowska konwersja nazwy z mp4 na mp3
+                    sw.WriteLine($"ffmpeg -i \"{fileName}\" -vn -ar 44100 -ac 2 -b:a 192k \"{(fileName).Remove(fileName.Length-1)+"3"}\"");
+
+                    sw.Close();
+
+                    string output = sr.ReadToEnd();
+
+                    process.WaitForExit();
+
+                    sr.Close();
+                    process.Close();
+
+
+
+                    return fileName;
                 });
             }
 

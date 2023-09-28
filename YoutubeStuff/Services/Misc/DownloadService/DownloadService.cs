@@ -29,7 +29,7 @@ namespace YoutubeStuff.Services.Misc.DownloadService
         }
 
 
-        public async Task<string> DownloadUrl(string url)
+        public Task<string> DownloadSingleUrl(string url)
         {
             if (!regexSingleVideo.IsMatch(url))
             {
@@ -38,16 +38,15 @@ namespace YoutubeStuff.Services.Misc.DownloadService
             else
             {
                 //download ... 
-                return await Task.Run(() => {
+                return Task.Run(() => {
                     var youtube = YouTube.Default;
                     var video = youtube.GetVideo(url);
 
-                    System.IO.File.WriteAllBytes((_downloadFolder + video.FullName + ".mp4"), video.GetBytes());
+                    System.IO.File.WriteAllBytes((_downloadFolder + video.FullName), video.GetBytes());
                     return video.FullName;
 
                 });
             }
         }
-
     }
 }

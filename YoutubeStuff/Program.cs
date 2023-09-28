@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using YoutubeStuff.DataContext;
+using YoutubeStuff.Services.Misc.DownloadService;
 using YoutubeStuff.Services.Misc.FileService;
+using YoutubeStuff.Services.Misc.YtFileService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IDownloadService, DownloadService>();
+builder.Services.AddScoped<IYtFileService, YtFileService>();
 
 var app = builder.Build();
 
