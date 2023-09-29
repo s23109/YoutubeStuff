@@ -5,8 +5,8 @@ namespace YoutubeStuff.Services.Misc.YtFileService
 {
     public class YtFileService : IYtFileService
     {
-        private IFileService _fileService;
-        private IDownloadService _downloadService;
+        public IFileService _fileService;
+        public IDownloadService _downloadService;
 
         public YtFileService(IFileService fileService, IDownloadService downloadService)
         {
@@ -19,10 +19,10 @@ namespace YoutubeStuff.Services.Misc.YtFileService
 
             try
             {
-                var filename = await _downloadService.DownloadSingleUrl(url);
+                var fileInfo = await _downloadService.DownloadSingleUrl(url);
                 Task.Delay(1000).Wait();
-                await _fileService.ConvertSingularToMp3(filename);
-                return filename;
+                var result = await _fileService.ConvertSingularToMp3(fileInfo);
+                return result;
 
             }
             catch (Exception ex)

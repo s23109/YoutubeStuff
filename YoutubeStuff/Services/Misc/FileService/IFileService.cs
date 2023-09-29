@@ -6,6 +6,6 @@
 
         string TestReturnVar();
 
-        Task<string> ConvertSingularToMp3(string fileName);
+        Task<string> ConvertSingularToMp3(Tuple<string,int?> fileInfo);
     }
 }
