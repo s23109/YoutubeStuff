@@ -20,7 +20,6 @@ namespace YoutubeStuff.Services.Misc.YtFileService
             try
             {
                 var fileInfo = await _downloadService.DownloadSingleUrl(url);
-                Task.Delay(1000).Wait();
                 var result = await _fileService.ConvertSingularToMp3(fileInfo);
                 return result;
 

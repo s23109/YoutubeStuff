@@ -58,11 +58,21 @@ namespace YoutubeStuff.Services.Misc.FileService
 
         public async Task<string> ConvertSingularToMp3(Tuple<string, int?> fileInfo)
         {
+            string newName = (fileInfo.Item1).Remove(fileInfo.Item1.Length - 1) + "3";
+            string tempAlbumCoverName = "cover.png";
+
+            string[] arguments =
+            {
+                $"ffmpeg -v -1 -i \"{fileInfo.Item1}\" -ss {GetHalfTimeString(fileInfo.Item2)} -vframes 1 -vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" \"{tempAlbumCoverName}\"",
+                $"ffmpeg -v -1 -i \"{fileInfo.Item1}\" -i \"{tempAlbumCoverName}\" -map 0:a -map 1 -c:a libmp3lame -b:a 192k -id3v2_version 3 -metadata:s:v title=\"Album Cover\" -metadata:s:v comment=\"Cover (front)\" \"{newName}\""
+               };
+
+
             ProcessStartInfo psi = new ProcessStartInfo()
             {
                 FileName = "cmd.exe",
                 RedirectStandardInput = true,
-                RedirectStandardOutput = true,
+                Arguments = ">NUL 2>NUL",
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 WorkingDirectory = _downloadFolder
@@ -80,35 +90,31 @@ namespace YoutubeStuff.Services.Misc.FileService
 
                 return await Task.Run(() =>
                 {
-                    Process process = new Process() { StartInfo = psi };
-                    process.Start();
 
-                    string newName = (fileInfo.Item1).Remove(fileInfo.Item1.Length - 1) + "3";
-                    string tempAlbumCoverName = "cover.png";
+                    using (Process process = new Process() { StartInfo = psi })
+                    {
+                        process.Start();
+                        StreamWriter sw = process.StandardInput;
+
+                        sw.WriteLine(arguments[0]);
+                        process.WaitForExit(2500);
+
+                        sw.WriteLine(arguments[1]);
+
+                        //Marginesy błędu dostosowujące się do długości filmu (przetwarza 1h film około 1min, dodaktowo margines dla małych plików) 
+                        //Potencjalne problemy w przyszłości, ale zawsze się zawiesza na waitforexit nieważne od rozwiązań
+                        
+                        process.WaitForExit((((fileInfo.Item2.Value)/50)*1000)+2500);
 
 
-                    StreamWriter sw = process.StandardInput;
-                    StreamReader sr = process.StandardOutput;
-
-                    //first extract cover photo
-
-                    sw.WriteLine($"ffmpeg -i \"{fileInfo.Item1}\" -ss {GetHalfTimeString(fileInfo.Item2)} -vframes 1 -vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" {tempAlbumCoverName}");
-
-                    //then given the cover photo extract audio 
-                    sw.WriteLine($"ffmpeg -i \"{fileInfo.Item1}\" -i \"{tempAlbumCoverName}\" -map 0:a -map 1 -c:a libmp3lame -b:a 192k -id3v2_version 3 -metadata:s:v title=\"Album Cover\" -metadata:s:v comment=\"Cover (front)\" {newName}");
-
-                    sw.Close();
-
-                    string output = sr.ReadToEnd();
-
-                    process.WaitForExit();
-
-                    sr.Close();
-                    process.Close();
+                        sw.Close();
 
 
 
-                    return newName;
+                        process.Close();
+                        return newName;
+                    }
+
                 });
             }
 
@@ -132,7 +138,7 @@ namespace YoutubeStuff.Services.Misc.FileService
         static string MakeStringCmdSafe(string input)
         {
             StringBuilder safeString = new StringBuilder();
-            List<char> charsToEscape = new List<char> { ' ','&', '(', ')', '[', ']', '{', '}', '^', ';', '!', '"', '<', '>', '|', '`' };
+            List<char> charsToEscape = new List<char> { ' ', '&', '(', ')', '[', ']', '{', '}', '^', ';', '!', '"', '<', '>', '|', '`' };
 
 
 
