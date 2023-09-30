@@ -120,6 +120,8 @@ public partial class MyDbContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.YtFileYtfileId).HasColumnName("YtFile_YTFileId");
 
+            entity.Property(e => e.CoverPhoto).HasColumnType("varbinary(max)");
+
             entity.HasOne(d => d.YtFileYtfile).WithMany(p => p.RealFiles)
                 .HasForeignKey(d => d.YtFileYtfileId)
                 .HasConstraintName("RealFile_YtFile");

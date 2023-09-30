@@ -8,12 +8,14 @@ namespace YoutubeStuff.Services.Misc.FileService
 
         private string _downloadFolder { get; set; }
         private string _binaryfolder { get; set; }
+        private string _siteFolder { get; set; }
 
         public FileService()
         {
             var config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
             _downloadFolder = config["downloadfolder"];
             _binaryfolder = config["binaryfolder"];
+            _siteFolder = config["siteFolder"];
         }
 
 
@@ -59,13 +61,13 @@ namespace YoutubeStuff.Services.Misc.FileService
         public async Task<string> ConvertSingularToMp3(Tuple<string, int?> fileInfo)
         {
             string newName = (fileInfo.Item1).Remove(fileInfo.Item1.Length - 1) + "3";
-            string tempAlbumCoverName = "cover.png";
+            string tempAlbumCoverName = $"{(fileInfo.Item1).Remove(fileInfo.Item1.Length - 4)} cover.png";
 
             string[] arguments =
             {
                 $"ffmpeg -v -1 -i \"{fileInfo.Item1}\" -ss {GetHalfTimeString(fileInfo.Item2)} -vframes 1 -vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" \"{tempAlbumCoverName}\"",
                 $"ffmpeg -v -1 -i \"{fileInfo.Item1}\" -i \"{tempAlbumCoverName}\" -map 0:a -map 1 -c:a libmp3lame -b:a 192k -id3v2_version 3 -metadata:s:v title=\"Album Cover\" -metadata:s:v comment=\"Cover (front)\" \"{newName}\""
-               };
+            };
 
 
             ProcessStartInfo psi = new ProcessStartInfo()
@@ -103,8 +105,8 @@ namespace YoutubeStuff.Services.Misc.FileService
 
                         //Marginesy błędu dostosowujące się do długości filmu (przetwarza 1h film około 1min, dodaktowo margines dla małych plików) 
                         //Potencjalne problemy w przyszłości, ale zawsze się zawiesza na waitforexit nieważne od rozwiązań
-                        
-                        process.WaitForExit((((fileInfo.Item2.Value)/50)*1000)+2500);
+
+                        process.WaitForExit((((fileInfo.Item2.Value) / 50) * 1000) + 2500);
 
 
                         sw.Close();
