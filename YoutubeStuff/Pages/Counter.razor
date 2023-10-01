@@ -10,42 +10,84 @@
 <input type="text" @bind-value=url/>
 <h3>@text</h3>
 
-<button @onclick=testProgress>Test Prog</button>
-<CustomProgressBar currentProgress="progressTmp" maxProgress="100" bottomMessage="asd" @ref=customProgressBar></CustomProgressBar>
+<CustomProgressBar downloadProgress="_downloadProgress" downloadSize="_downloadSize" bottomMessage="_bottomMessage" filesFinished="_filesFinished" filesTotal="_filesTotal" @ref=_customProgressBar></CustomProgressBar>
 
 
 
 
 @code {
-    private CustomProgressBar customProgressBar;
+    private CustomProgressBar _customProgressBar;
 
     public string url = "https://www.youtube.com/watch?v=zGDzdps75ns";
     public string text = null;
     public bool isDownloadStart = false;
-    public long progressTmp = 0l;
+
+    private long? _downloadProgress = 0l;
+    private long? _downloadSize = 100l;
+    private long? _filesFinished = 0;
+    private long? _filesTotal = 1;
+    private string? _bottomMessage = "";
+
+    protected override void OnInitialized()
+    {
+        YtFileService.DownloadService.statusMessageChanged += HandleBottomMessage;
+        YtFileService.DownloadService.currentFileReadChanged += HandleDownloadSize;
+        YtFileService.DownloadService.currentFileByteChanged += HandleDownloadProgress;
+        YtFileService.DownloadService.totalFileAmountChanged += HandleFilesTotal;
+        YtFileService.DownloadService.totaltFileReadChanged += HandleFilesFinished;
+
+    }
+
+    public void Dispose()
+    {
+        YtFileService.DownloadService.statusMessageChanged -= HandleBottomMessage;
+        YtFileService.DownloadService.currentFileReadChanged -= HandleDownloadSize;
+        YtFileService.DownloadService.currentFileByteChanged -= HandleDownloadProgress;
+        YtFileService.DownloadService.totalFileAmountChanged -= HandleFilesTotal;
+        YtFileService.DownloadService.totaltFileReadChanged -= HandleFilesFinished;
+    }
+
+    private void HandleDownloadProgress()
+    {
+        _downloadProgress = YtFileService.DownloadService.GetCurrentFileRead();
+        _customProgressBar.UpdateDownloadProgress(_downloadProgress);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleDownloadSize()
+    {
+        _downloadSize = YtFileService.DownloadService.GetCurrentFileByte();
+        _customProgressBar.UpdateDownloadSize(_downloadSize);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleFilesFinished()
+    {
+        _filesFinished = YtFileService.DownloadService.GetTotaltFileRead();
+        _customProgressBar.UpdateFilesProgress(_filesFinished);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleFilesTotal()
+    {
+        _filesTotal = YtFileService.DownloadService.GetTotalFileAmount();
+        _customProgressBar.UpdateFilesAmount(_filesTotal);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleBottomMessage()
+    {
+        _bottomMessage = YtFileService.DownloadService.GetCurrentStatusMessage();
+        _customProgressBar.UpdateBottomMessage(_bottomMessage);
+        InvokeAsync(StateHasChanged);
+    }
+
 
     public async Task download()
     {
         text = await YtFileService.DownloadAndConvertSingle(url);
     }
 
-    public async Task testProgress()
-    {
-        progressTmp = 0l;
-        isDownloadStart = true;
 
-        while (progressTmp < 100)
-        {
-            await Task.Delay(200);
-            progressTmp += 1;
-            customProgressBar.UpdateProgress(progressTmp);
-            await InvokeAsync(StateHasChanged);
-        }
-
-        await Task.Delay(5000);
-        isDownloadStart = false;
-        await InvokeAsync(StateHasChanged);
-
-    }
 }
 

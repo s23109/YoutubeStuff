@@ -5,7 +5,7 @@ namespace YoutubeStuff.Services.Misc.YtFileService
 {
     public interface IYtFileService
     {
-        public IDownloadService _downloadService { get; set; }
+        public IDownloadService DownloadService { get; set; }
         Task<string> DownloadAndConvertSingle(string url);
 
     }

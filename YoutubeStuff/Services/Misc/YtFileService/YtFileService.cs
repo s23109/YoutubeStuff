@@ -6,13 +6,13 @@ namespace YoutubeStuff.Services.Misc.YtFileService
     public class YtFileService : IYtFileService
     {
         public IFileService _fileService;
-        public IDownloadService _downloadService { get; set; }
+        public IDownloadService DownloadService { get; set; }
 
 
         public YtFileService(IFileService fileService, IDownloadService downloadService)
         {
             _fileService = fileService;
-            _downloadService = downloadService;
+            this.DownloadService = downloadService;
         }
 
 
@@ -21,7 +21,7 @@ namespace YoutubeStuff.Services.Misc.YtFileService
 
             try
             {
-                var fileInfo = await _downloadService.DownloadSingleUrl(url);
+                var fileInfo = await DownloadService.DownloadSingleUrl(url);
                 var result = await _fileService.ConvertSingularToMp3(fileInfo);
                 return result;
 

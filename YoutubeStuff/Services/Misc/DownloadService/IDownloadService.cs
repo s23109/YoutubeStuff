@@ -9,6 +9,8 @@
 
         long? GetTotalFileAmount();
 
+        string? GetCurrentStatusMessage();
+
         public event Action currentFileByteChanged;
 
         public event Action currentFileReadChanged;
@@ -16,6 +18,8 @@
         public event Action totaltFileReadChanged;
 
         public event Action totalFileAmountChanged;
+
+        public event Action statusMessageChanged;
 
         bool IsCorrectUrl(string url);
 

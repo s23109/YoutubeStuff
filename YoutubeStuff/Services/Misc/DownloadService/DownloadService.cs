@@ -17,17 +17,35 @@ namespace YoutubeStuff.Services.Misc.DownloadService
         private string _binaryfolder { get; set; }
 
 
-        public event Action currentFileByteChanged;
+        public event Action currentFileByteChanged = () => { };
 
-        public event Action currentFileReadChanged;
+        public event Action currentFileReadChanged = () => { };
 
-        public event Action totaltFileReadChanged;
+        public event Action totaltFileReadChanged = () => { };
 
-        public event Action totalFileAmountChanged;
+        public event Action totalFileAmountChanged = () => { };
 
+        public event Action statusMessageChanged = () => { };
+
+        private string? _statusMessage = "";
+
+        public string? statusMessage
+        {
+            get
+            {
+                return _statusMessage;
+            }
+            set
+            {
+                if (!_statusMessage.Equals(value))
+                {
+                    _statusMessage = value;
+                    statusMessageChanged.Invoke();
+                }
+            }
+        }
 
         private long? _currentFileByte = 0l;
-
         public long? currentFileByte
         {
             get
@@ -110,13 +128,14 @@ namespace YoutubeStuff.Services.Misc.DownloadService
 
         public Task<Tuple<string, int?>> DownloadSingleUrl(string url)
         {
+            ClearTrackingVariables();
+
             if (!regexSingleVideo.IsMatch(url))
             {
                 throw new Exception("Invalid URL given");
             }
             else
             {
-                totalFileRead = 0l;
                 //download ... 
                 return Task.Run(async () =>
                 {
@@ -124,7 +143,7 @@ namespace YoutubeStuff.Services.Misc.DownloadService
                     var video = youtube.GetVideo(url);
                     var client = new HttpClient();
 
-                    currentFileRead = 0;
+                    
 
                     using (Stream output = File.OpenWrite((_downloadFolder + video.FullName)))
                     {
@@ -132,13 +151,13 @@ namespace YoutubeStuff.Services.Misc.DownloadService
                         {
                             currentFileByte = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).Result.Content.Headers.ContentLength;
                         }
-
+                        currentFileRead = 0;
                         using (var input = await client.GetStreamAsync(video.Uri))
                         {
                             byte[] buffer = new byte[16 * 1024];
                             int read;
                             //download start
-
+                            statusMessage = $"Downloading {video.FullName}";
                             while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
                             {
                                 output.Write(buffer, 0, read);
@@ -176,6 +195,20 @@ namespace YoutubeStuff.Services.Misc.DownloadService
         public long? GetTotalFileAmount()
         {
             return totalFileAmount;
+        }
+
+        private void ClearTrackingVariables()
+        {
+            _currentFileByte = 0l;
+            _currentFileRead = 0l;
+            _totalFileAmount = 0l;
+            _totalFileRead = 0l;
+            _statusMessage = "";
+        }
+
+        public string? GetCurrentStatusMessage()
+        {
+            return statusMessage;
         }
     }
 }

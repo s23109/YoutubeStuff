@@ -1,7 +1,18 @@
-﻿<div class="my-1"> 
+﻿<div class="my-1 "> 
+    <div style="margin-bottom: 0.2rem">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: @filesFinished%" aria-valuenow="@filesFinished" aria-valuemin="0" aria-valuemax="@filesTotal">
+                @(100 * filesFinished / filesTotal)%
+            </div>
+        </div>
+        <p style="font-size: 0.7rem; margin-top: 0.25rem; margin-bottom:0.25rem">
+            Downloaded @filesFinished / @filesTotal
+        </p>
+    </div>
+    
     <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: @currentProgress%" aria-valuenow="@currentProgress" aria-valuemin="0" aria-valuemax="@maxProgress">
-            @(100 * currentProgress / maxProgress)%
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: @downloadProgress%" aria-valuenow="@downloadProgress" aria-valuemin="0" aria-valuemax="@downloadSize">
+            @(100 * downloadProgress / downloadSize)%
         </div>
     </div>
     @if(bottomMessage != null)
@@ -16,25 +27,58 @@
 
 @code {
     [Parameter]
-    public long currentProgress { get; set; } = 0l;
+    public long? downloadProgress { get; set; } = 0l;
 
     [Parameter]
-    public long maxProgress { get; set; } = 100l;
+    public long? downloadSize { get; set; } = 100l;
+
+    [Parameter]
+    public long? filesFinished { get; set; } = 0l;
+
+    [Parameter]
+    public long? filesTotal { get; set; } = 1l;
 
     [Parameter]
     public string? bottomMessage { get; set; }
 
-    public void UpdateProgress(long newProgressVal)
+    public void UpdateDownloadProgress(long? newProgressVal)
     {
-        currentProgress = newProgressVal;
-        if (currentProgress > maxProgress)
+        downloadProgress = newProgressVal;
+        if (downloadProgress > downloadSize)
         {
-            currentProgress = maxProgress;
+            downloadProgress = downloadSize;
         }
 
-        StateHasChanged();
+        InvokeAsync(StateHasChanged);
     }
-    
 
+    public void UpdateFilesProgress(long? newFilesDownloaded)
+    {
+        filesFinished = newFilesDownloaded;
+        if (filesFinished > filesTotal)
+        {
+            filesFinished = filesTotal;
+        }
+        InvokeAsync(StateHasChanged);
+
+    }
+
+    public void UpdateBottomMessage (string? newBottomMessage)
+    {
+        bottomMessage = newBottomMessage;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void UpdateDownloadSize(long? newDownloadSize)
+    {
+        downloadSize = newDownloadSize;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void UpdateFilesAmount(long? newFilesAmount)
+    {
+        filesTotal = newFilesAmount;
+        InvokeAsync(StateHasChanged);
+    }
 
 }
