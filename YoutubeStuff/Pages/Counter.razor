@@ -6,17 +6,46 @@
 
 <PageTitle>Counter</PageTitle>
 
-<button @onclick=download>Twoj stary</button>
+<button @onclick=download>Download Test</button>
 <input type="text" @bind-value=url/>
 <h3>@text</h3>
 
+<button @onclick=testProgress>Test Prog</button>
+<CustomProgressBar currentProgress="progressTmp" maxProgress="100" bottomMessage="asd" @ref=customProgressBar></CustomProgressBar>
+
+
+
 
 @code {
+    private CustomProgressBar customProgressBar;
+
     public string url = "https://www.youtube.com/watch?v=zGDzdps75ns";
     public string text = null;
+    public bool isDownloadStart = false;
+    public long progressTmp = 0l;
 
     public async Task download()
     {
         text = await YtFileService.DownloadAndConvertSingle(url);
     }
+
+    public async Task testProgress()
+    {
+        progressTmp = 0l;
+        isDownloadStart = true;
+
+        while (progressTmp < 100)
+        {
+            await Task.Delay(200);
+            progressTmp += 1;
+            customProgressBar.UpdateProgress(progressTmp);
+            await InvokeAsync(StateHasChanged);
+        }
+
+        await Task.Delay(5000);
+        isDownloadStart = false;
+        await InvokeAsync(StateHasChanged);
+
+    }
 }
+

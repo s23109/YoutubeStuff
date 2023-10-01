@@ -6,13 +6,15 @@ namespace YoutubeStuff.Services.Misc.YtFileService
     public class YtFileService : IYtFileService
     {
         public IFileService _fileService;
-        public IDownloadService _downloadService;
+        public IDownloadService _downloadService { get; set; }
+
 
         public YtFileService(IFileService fileService, IDownloadService downloadService)
         {
             _fileService = fileService;
             _downloadService = downloadService;
         }
+
 
         public async Task<string> DownloadAndConvertSingle(string url)
         {
