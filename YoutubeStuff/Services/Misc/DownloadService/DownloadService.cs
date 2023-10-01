@@ -15,10 +15,85 @@ namespace YoutubeStuff.Services.Misc.DownloadService
 
         private string _downloadFolder { get; set; }
         private string _binaryfolder { get; set; }
-        public long? currentFileByte { get; set; } = 0L;
-        public long? currentFileRead { get; set; } = 0L;
-        public long? totaltFileRead { get; set; } = 0L;
-        public long? totalFileAmount { get; set; } = 0L;
+
+
+        public event Action currentFileByteChanged;
+
+        public event Action currentFileReadChanged;
+
+        public event Action totaltFileReadChanged;
+
+        public event Action totalFileAmountChanged;
+
+
+        private long? _currentFileByte = 0l;
+
+        public long? currentFileByte
+        {
+            get
+            {
+                return _currentFileByte;
+            }
+            set
+            {
+                if (_currentFileByte != value)
+                {
+                    _currentFileByte = value;
+                    currentFileByteChanged.Invoke();
+                }
+            }
+        }
+
+        private long? _currentFileRead = 0l;
+        public long? currentFileRead
+        {
+            get
+            {
+                return _currentFileRead;
+            }
+            set
+            {
+                if (_currentFileRead != value)
+                {
+                    _currentFileRead = value;
+                    currentFileReadChanged.Invoke();
+                }
+            }
+        }
+
+        private long? _totalFileRead = 0l;
+        public long? totalFileRead
+        {
+            get
+            {
+                return _totalFileRead;
+            }
+            set
+            {
+                if (_totalFileRead != value)
+                {
+                    _totalFileRead = value;
+                    totaltFileReadChanged.Invoke();
+                }
+            }
+        }
+
+        private long? _totalFileAmount = 0l;
+        public long? totalFileAmount
+        {
+            get
+            {
+                return _totalFileAmount;
+            }
+            set
+            {
+                if (_totalFileAmount != value)
+                {
+                    _totalFileAmount = value;
+                    totalFileAmountChanged.Invoke();
+                }
+            }
+        }
 
         public DownloadService()
         {
@@ -41,12 +116,14 @@ namespace YoutubeStuff.Services.Misc.DownloadService
             }
             else
             {
+                totalFileRead = 0l;
                 //download ... 
-                return Task.Run(async () => {
+                return Task.Run(async () =>
+                {
                     var youtube = YouTube.Default;
                     var video = youtube.GetVideo(url);
                     var client = new HttpClient();
-                    
+
                     currentFileRead = 0;
 
                     using (Stream output = File.OpenWrite((_downloadFolder + video.FullName)))
@@ -62,7 +139,7 @@ namespace YoutubeStuff.Services.Misc.DownloadService
                             int read;
                             //download start
 
-                            while ((read = input.Read(buffer,0,buffer.Length))> 0)
+                            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
                             {
                                 output.Write(buffer, 0, read);
                                 currentFileRead += read;
@@ -72,13 +149,33 @@ namespace YoutubeStuff.Services.Misc.DownloadService
 
 
                     }
-
+                    totalFileRead = 1;
 
                     System.IO.File.WriteAllBytes((_downloadFolder + video.FullName), video.GetBytes());
-                    return new Tuple<string,int?>(video.FullName,video.Info.LengthSeconds);
+                    return new Tuple<string, int?>(video.FullName, video.Info.LengthSeconds);
 
                 });
             }
+        }
+
+        public long? GetCurrentFileByte()
+        {
+            return currentFileByte;
+        }
+
+        public long? GetCurrentFileRead()
+        {
+            return currentFileRead;
+        }
+
+        public long? GetTotaltFileRead()
+        {
+            return totalFileRead;
+        }
+
+        public long? GetTotalFileAmount()
+        {
+            return totalFileAmount;
         }
     }
 }

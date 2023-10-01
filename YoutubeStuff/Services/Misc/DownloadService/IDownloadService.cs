@@ -1,15 +1,21 @@
-﻿using YoutubeStuff.Utils;
-
-namespace YoutubeStuff.Services.Misc.DownloadService
+﻿namespace YoutubeStuff.Services.Misc.DownloadService
 {
     public interface IDownloadService
     {
-        long? currentFileByte { get; set; }
-        long? currentFileRead { get; set; }
+        long? GetCurrentFileByte();
+        long? GetCurrentFileRead();
 
-        long? totaltFileRead { get; set; }
+        long? GetTotaltFileRead();
 
-        long? totalFileAmount { get; set; }
+        long? GetTotalFileAmount();
+
+        public event Action currentFileByteChanged;
+
+        public event Action currentFileReadChanged;
+
+        public event Action totaltFileReadChanged;
+
+        public event Action totalFileAmountChanged;
 
         bool IsCorrectUrl(string url);
 
