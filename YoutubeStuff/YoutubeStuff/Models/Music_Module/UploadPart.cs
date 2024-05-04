@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace YoutubeStuff.Models
+namespace YoutubeStuff.Models.Music_Module
 {
     public partial class UploadPart
     {

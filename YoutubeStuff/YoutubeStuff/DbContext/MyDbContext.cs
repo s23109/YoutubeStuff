@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using YoutubeStuff.Models.Music_Module;
 
 namespace YoutubeStuff.Models
 {
-    public partial class Muzyka_DbContext : DbContext
+    public partial class MyDbContext : DbContext
     {
-        public Muzyka_DbContext()
+        public MyDbContext()
         {
         }
 
-        public Muzyka_DbContext(DbContextOptions<Muzyka_DbContext> options)
+        public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
         {
         }
