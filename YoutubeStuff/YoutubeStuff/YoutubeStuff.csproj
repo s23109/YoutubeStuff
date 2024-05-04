@@ -20,4 +20,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Base\" />
+    <Folder Include="Services\MusicModule\FileManipulationService\" />
+  </ItemGroup>
+
 </Project>
