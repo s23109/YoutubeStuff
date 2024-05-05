@@ -11,6 +11,8 @@ builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseSqlServer(builder.Configuration["Default"]);
 });
 
+//builder.WebHost.UseWebRoot("wwwroot").UseStaticWebAssets();
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
