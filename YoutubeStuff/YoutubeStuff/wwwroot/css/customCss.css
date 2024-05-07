@@ -87,6 +87,11 @@ article {
      color: yellow;
 }
 
+.link:active{
+    text-shadow: rgb(255, 172, 0) 1px 1px;
+}
+
+
 .navbar-toggler{
     background-color : transparent;
 }

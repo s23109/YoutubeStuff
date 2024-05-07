@@ -17,6 +17,9 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
+//bootstrap
+builder.Services.AddBootstrapBlazor();
+
 var app = builder.Build();
 
 

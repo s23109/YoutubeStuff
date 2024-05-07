@@ -13,7 +13,7 @@
                 <a class="navbar-brand link" href="">YoutubeStuff</a>
             </div>
         </div>
-        <NavMenu />
+        <NavMenu navElements="navElements" />
     </div>
 
     <main>
@@ -33,7 +33,19 @@
 
     private string? SideBarCssClass => collapseNavMenu ? "sidebar-hidden" : "sidebar-showing";
 
-    public List<NavElement> navElements = new List<NavElement>();
+    public List<NavElement> navElements = new List<NavElement>
+    {
+        new NavElement
+        {
+            Destination = "/music",
+            Title = "Index Music"
+        },
+        new NavElement
+        {
+            Destination = "/music/batchuploads",
+            Title = "Batch Uploads"
+        }
+    };
 
     private void ToggleNavMenu()
     {
