@@ -1,29 +1,44 @@
-﻿
+﻿@using YoutubeStuff.ViewModels
+
 
 <div class="nav-links-wrap">
+    @if (includeHome)
+    {
     <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link link" href="" Match="NavLinkMatch.All">
+                Home
+            </NavLink>
+        </div>
+    </nav>
+    }
+
+
+
+    @foreach(var ele in navElements)
+    {
+        <nav class="flex-column">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link link" href="@ele.Destination" Match="NavLinkMatch.All">
+                    @ele.Title
+                </NavLink>
+            </div>
+        </nav>
+    }
+
+@*     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-    </nav>
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-    </nav>
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-    </nav>
+    </nav> *@
 </div>
 
 @code {
+    [Parameter]
+    public List<NavElement> navElements { get; set; } = new List<NavElement>();
 
+    [Parameter]
+    public bool includeHome { get; set; } = true;
 }

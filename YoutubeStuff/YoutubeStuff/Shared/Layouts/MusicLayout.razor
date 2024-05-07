@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using YoutubeStuff.ViewModels
+@inherits LayoutComponentBase
 
 <PageTitle>MusicLayout</PageTitle>
 
@@ -32,7 +33,7 @@
 
     private string? SideBarCssClass => collapseNavMenu ? "sidebar-hidden" : "sidebar-showing";
 
-
+    public List<NavElement> navElements = new List<NavElement>();
 
     private void ToggleNavMenu()
     {
