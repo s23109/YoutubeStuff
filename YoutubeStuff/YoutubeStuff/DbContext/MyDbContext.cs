@@ -115,6 +115,8 @@ namespace YoutubeStuff.Models
                 entity.Property(e => e.SiteType).HasColumnName("site_type");
 
                 entity.Property(e => e.UploadType).HasColumnName("upload_type");
+
+                entity.Property(e => e.CreatedAt).HasColumnName("CreatedAt");
             });
 
             modelBuilder.Entity<UploadPart>(entity =>

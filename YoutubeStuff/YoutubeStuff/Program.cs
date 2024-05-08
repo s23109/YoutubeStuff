@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<MyDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration["Default"]);
+    options.UseSqlServer(builder.Configuration["ConnectionStrings:Default"]);
 });
 
 //builder.WebHost.UseWebRoot("wwwroot").UseStaticWebAssets();
