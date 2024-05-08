@@ -1,9 +1,21 @@
 ﻿@page "/music/batchuploads"
+
 @using YoutubeStuff.Shared.Layouts
 
 @layout MusicLayout
 
-<h3>Music_BatchUploadList</h3>
+<div class="d-flex flex-row justify-content-between align-items-start border-bottom border-dark py-2">
+    <h3>Upload Batches</h3>
+    <a href="/music/upload">
+        <Button Color="Color.Danger">
+            <p class="text-black mb-0">Upload files</p>
+        </Button>
+    </a>
+
+</div>
+<div class="d-flex flex-column justify-content-center align-items-start py-2">
+    <h5>No uploads registered in system.</h5>
+</div>
 
 @code {
 
