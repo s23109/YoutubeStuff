@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 
 using YoutubeStuff.Models;
+using YoutubeStuff.Services.MusicModule.DownloadUploadService;
+using YoutubeStuff.Services.MusicModule.FileControlService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,16 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+//Music Module
+
+//IFileControl init in program start
+var fileControl = new FileControlService();
+builder.Services.AddSingleton<IFileControlService>(fileControl);
+
+
+builder.Services.AddScoped<IDownloadUploadService, DownloadUploadService>();
+// / Music Module
 
 //bootstrap
 builder.Services.AddBootstrapBlazor();
